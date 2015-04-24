@@ -83,8 +83,9 @@ class Cube {
         static void set_shininess_SL(GLint sl);
 
         Cube(glm::vec3 translate = glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f),
-                glm::vec3 rotate = glm::vec3(0.0f,0.0f,0.0f)) :_center{translate},
+                glm::vec3 rotate = glm::vec3(0.0f,0.0f,0.0f),
+                glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f)
+                ) :_center{translate},
             _radius{1.0f},
             _ambient_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
             _diffuse_rho{glm::vec3(1.00f, 1.00f, 1.00f)},
@@ -97,9 +98,11 @@ class Cube {
             }
 
             glm::mat4 identity = glm::mat4(1.0f);
-            glm::mat4 smtx = glm::scale(identity, scale);
-            glm::mat4 tmx  = glm::translate(identity, glm::vec3(-2.0f, -2.0f, 0.0f));
+
+            glm::mat4 tmx  = glm::translate(identity, translate);
             glm::mat4 rtx = glm::rotate(identity, rotate.x, glm::vec3(1,0,0)) * glm::rotate(identity, rotate.y, glm::vec3(0,1,0)) * glm::rotate(identity, rotate.z, glm::vec3(0,0,1));
+            glm::mat4 smtx = glm::scale(identity, scale);
+
             _model_transformation  = tmx * rtx * smtx;
             _vector_transformation = glm::mat3(static_cast<GLfloat>(1.0f/_radius));
         }

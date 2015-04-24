@@ -274,8 +274,12 @@ void init() {
     GLfloat rhoRed;
     GLfloat rhoGreen;
     GLfloat rhoBlue;
-    Cube *c = new Cube();
-    rhoRed = 0;
+    Cube *c = new Cube(
+            glm::vec3(0.0f,0.0f,0.25f), // translate
+            glm::vec3(0.0f,0.0f,0.0f), // rotate
+            glm::vec3(0.8f,0.8f,0.01f)  // scale
+            );
+    rhoRed = 1;
     rhoGreen = 1;
     rhoBlue = 0;
     c->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
@@ -286,16 +290,35 @@ void init() {
     delete c;
 
 
-    Cylinder *cy = new Cylinder();
-    rhoRed = 0;
-    rhoGreen = 0;
-    rhoBlue = 1;
+    Cylinder *cy = new Cylinder(
+            glm::vec3(0.0f,0.0f,0.0f),
+            glm::vec3(0.0f,0.0f,0.0f),
+            glm::vec3(1.0f,1.0f,0.25f));
+
+    rhoRed = 139.0f/255.0f;
+    rhoGreen = 69.0f/255.0f;
+    rhoBlue = 19.0f/255.0f;
     cy->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     cy->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     cy->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     cy->set_shininess(30.0f);
     CylinderVector.push_back(*cy);
     delete cy;
+
+    Sphere *s = new Sphere(
+            glm::vec3(0.0f,0.0f,0.0f),
+            glm::vec3(0.0f,0.0f,0.0f),
+            glm::vec3(1.0f,1.0f,1.0f)
+            );
+    rhoRed = 250.0f/255.0f;
+    rhoGreen = 193.0f/255.0f;
+    rhoBlue = 88.0f/255.0f;
+    s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    s->set_shininess(30.0f);
+    SphereVector.push_back(*s);
+    delete s;
 
 
     TheAmbientIntensity = glm::vec3(0.1f, 0.1f, 0.08f);
