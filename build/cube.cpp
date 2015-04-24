@@ -181,8 +181,8 @@ void Cube::initialize_class() {
     normal[index][2] = -1.0f;
 
     for (int i = 0; i < nVertices; i++) {
-        printf("[%f, %f, %f]  ", position[i][0], position[i][1], position[i][2]);
-        printf("[%f, %f, %f]\n", normal[i][0], normal[i][1], normal[i][2]);
+        //printf("[%f, %f, %f]  ", position[i][0], position[i][1], position[i][2]);
+        //printf("[%f, %f, %f]\n", normal[i][0], normal[i][1], normal[i][2]);
     }
 
     int element_index = 0;

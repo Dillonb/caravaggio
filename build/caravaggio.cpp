@@ -271,50 +271,25 @@ void init() {
     Cylinder::initialize_class();
     Cube::initialize_class();
 
-    /*
-       for (int i = 0; i < 3; i++) {
-       GLfloat tx = 2.0f*(i - 1);
-       for(int j = 0; j < 3; j++) {
-       GLfloat ty = 2.0*(j - 1);
-       GLfloat tz = 0.0f;
-       GLfloat rhoRed = 0.9 - i*0.1;
-       GLfloat rhoGreen = 0.9 - j*0.1;
-       GLfloat rhoBlue  = 0.9 - (i + j)*0.1;
-       Sphere *s = new Sphere(glm::vec3(tx, ty, tz), 0.5f);
-       s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-       s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-       s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-       s->set_shininess(30.0f);
-       SphereVector.push_back(*s);
-       delete s;
-       }
-       }
-       */
-
-
-
-
     GLfloat rhoRed;
     GLfloat rhoGreen;
     GLfloat rhoBlue;
-
-
     Cube *c = new Cube();
-    rhoRed = 1;
-    rhoGreen = 0;
+    rhoRed = 0;
+    rhoGreen = 1;
     rhoBlue = 0;
     c->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     c->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     c->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    c->set_shininess(3000.0f);
+    c->set_shininess(30.0f);
     CubeVector.push_back(*c);
     delete c;
 
 
     Cylinder *cy = new Cylinder();
     rhoRed = 0;
-    rhoGreen = 1;
-    rhoBlue = 0;
+    rhoGreen = 0;
+    rhoBlue = 1;
     cy->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     cy->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     cy->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
@@ -340,6 +315,11 @@ void init() {
     Cylinder::set_diffuse_rho_SL(glGetUniformLocation(shader_program, "DiffuseRho"));
     Cylinder::set_specular_rho_SL(glGetUniformLocation(shader_program, "SpecularRho"));
     Cylinder::set_shininess_SL(glGetUniformLocation(shader_program, "Shininess"));
+
+    Cube::set_ambient_rho_SL(glGetUniformLocation(shader_program, "AmbientRho"));
+    Cube::set_diffuse_rho_SL(glGetUniformLocation(shader_program, "DiffuseRho"));
+    Cube::set_specular_rho_SL(glGetUniformLocation(shader_program, "SpecularRho"));
+    Cube::set_shininess_SL(glGetUniformLocation(shader_program, "Shininess"));
 
     SL_ModelViewTransformation = glGetUniformLocation(shader_program, "ModelViewTransformation");
     SL_NormalVectorTransformation = glGetUniformLocation(shader_program, "NormalVectorTransformation");
