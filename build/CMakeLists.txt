@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.0.2)
 project (caravaggio)
-add_executable(caravaggio caravaggio.cpp sphere.cpp cylinder.cpp cube.cpp)
+add_executable(caravaggio caravaggio.cpp sphere.cpp cylinder.cpp cube.cpp hemisphere.cpp)
 # target_compile_features(caravaggio PRIVATE cxx_generalized_initializers)
 
 find_package(OpenGL REQUIRED)

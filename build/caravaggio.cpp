@@ -63,10 +63,12 @@
 #include "sphere.h"
 #include "cylinder.h"
 #include "cube.h"
+#include "hemisphere.h"
 
 std::vector<Sphere> SphereVector;
 std::vector<Cylinder> CylinderVector;
 std::vector<Cube> CubeVector;
+std::vector<Hemisphere> HemisphereVector;
 
 glm::vec3 TheAmbientIntensity;
 glm::vec3 TheLightIntensity;
@@ -305,25 +307,55 @@ void init() {
     CylinderVector.push_back(*cy);
     delete cy;
 
-    Sphere *s = new Sphere(
+    //Sphere *s = new Sphere(
+            //glm::vec3(0.0f,0.0f,0.0f),
+            //glm::vec3(0.0f,0.0f,0.0f),
+            //glm::vec3(1.0f,1.0f,1.0f)
+            //);
+    //rhoRed = 250.0f/255.0f;
+    //rhoGreen = 193.0f/255.0f;
+    //rhoBlue = 88.0f/255.0f;
+    //s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    //s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    //s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    //s->set_shininess(30.0f);
+    //SphereVector.push_back(*s);
+    //delete s;
+
+
+    Hemisphere *hs = new Hemisphere(
+            glm::vec3(0.0f,0.0f,0.3f),
             glm::vec3(0.0f,0.0f,0.0f),
-            glm::vec3(0.0f,0.0f,0.0f),
-            glm::vec3(1.0f,1.0f,1.0f)
+            glm::vec3(0.9f,0.9f,0.7f)
             );
     rhoRed = 250.0f/255.0f;
     rhoGreen = 193.0f/255.0f;
     rhoBlue = 88.0f/255.0f;
-    s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    s->set_shininess(30.0f);
-    SphereVector.push_back(*s);
-    delete s;
+    hs->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_shininess(30.0f);
+    HemisphereVector.push_back(*hs);
+    delete hs;
 
+    hs = new Hemisphere(
+            glm::vec3(0.0f,0.0f,0.0f),
+            glm::vec3(M_PI,0.0f,0.0f),
+            glm::vec3(0.9f,0.9f,0.4f)
+            );
+    rhoRed = 250.0f/255.0f;
+    rhoGreen = 193.0f/255.0f;
+    rhoBlue = 88.0f/255.0f;
+    hs->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    hs->set_shininess(30.0f);
+    HemisphereVector.push_back(*hs);
+    delete hs;
 
     TheAmbientIntensity = glm::vec3(0.1f, 0.1f, 0.08f);
     TheLightIntensity   = glm::vec3(1.0f, 1.0f, 0.8f);  // a yellow tint.
-    TheLightPosition    = glm::vec3(0.0f, 0.0f, 10.0f);
+    TheLightPosition    = glm::vec3(10.0f, 0.0f, 10.0f);
 
     GLuint shader_program = createVertexFragmentProgram(std::string("phong.vert"),
             std::string("phong.frag"));
@@ -343,6 +375,11 @@ void init() {
     Cube::set_diffuse_rho_SL(glGetUniformLocation(shader_program, "DiffuseRho"));
     Cube::set_specular_rho_SL(glGetUniformLocation(shader_program, "SpecularRho"));
     Cube::set_shininess_SL(glGetUniformLocation(shader_program, "Shininess"));
+
+    Hemisphere::set_ambient_rho_SL(glGetUniformLocation(shader_program, "AmbientRho"));
+    Hemisphere::set_diffuse_rho_SL(glGetUniformLocation(shader_program, "DiffuseRho"));
+    Hemisphere::set_specular_rho_SL(glGetUniformLocation(shader_program, "SpecularRho"));
+    Hemisphere::set_shininess_SL(glGetUniformLocation(shader_program, "Shininess"));
 
     SL_ModelViewTransformation = glGetUniformLocation(shader_program, "ModelViewTransformation");
     SL_NormalVectorTransformation = glGetUniformLocation(shader_program, "NormalVectorTransformation");
@@ -425,6 +462,24 @@ void display(void) {
 
         iter->draw_elements();
     }
+
+    // Render Hemispheres
+    for (std::vector<Hemisphere>::iterator iter = HemisphereVector.begin();
+            iter != HemisphereVector.end(); iter++) {
+        glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
+        glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
+        glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
+
+        glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
+        glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
+                1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
+
+        iter->draw_elements();
+    }
+
+
+
     glfwSwapBuffers(gWindow);
 }
 
