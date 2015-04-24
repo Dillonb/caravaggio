@@ -89,127 +89,127 @@ double Phi   = 0.0;
 double Rho   = 8.0;
 
 GLuint loadAndCompileShader(GLenum shaderType, const std::string& path) {
-   std::ifstream f;
-   f.open(path.c_str(), std::ios::in | std::ios::binary);
-   if (!f.is_open()) {
-      throw std::runtime_error(std::string("Can't open shader file ") + path);
-   }
+    std::ifstream f;
+    f.open(path.c_str(), std::ios::in | std::ios::binary);
+    if (!f.is_open()) {
+        throw std::runtime_error(std::string("Can't open shader file ") + path);
+    }
 
-// read the shader program from the file into the buffer
-std::stringstream buffer;
-buffer << f.rdbuf();
+    // read the shader program from the file into the buffer
+    std::stringstream buffer;
+    buffer << f.rdbuf();
 
-GLuint shader = glCreateShader(shaderType);
-if (! shader) {
-   throw std::runtime_error(std::string("Can't create shader for file ") + path);
-}
+    GLuint shader = glCreateShader(shaderType);
+    if (! shader) {
+        throw std::runtime_error(std::string("Can't create shader for file ") + path);
+    }
 
-// tricky conversion from a stringstream buffer to a C (null terminated) string.
-const std::string& bufferAsString = buffer.str();
-const GLchar* shaderCode = bufferAsString.c_str();
-const GLchar* codeArray[] = { shaderCode };
-//GLint size = strlen(shaderCode);
-glShaderSource(shader, 1, codeArray, NULL);
-glCompileShader(shader);
+    // tricky conversion from a stringstream buffer to a C (null terminated) string.
+    const std::string& bufferAsString = buffer.str();
+    const GLchar* shaderCode = bufferAsString.c_str();
+    const GLchar* codeArray[] = { shaderCode };
+    //GLint size = strlen(shaderCode);
+    glShaderSource(shader, 1, codeArray, NULL);
+    glCompileShader(shader);
 
-   GLint status;
-   glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-   if (! status) {
-      std::cerr << "Compilation error in shader file " << path << std::endl;
-      GLint logLen;
-      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
-      if (logLen > 0) {
-         char *log = new char[logLen];
-         GLsizei written;
-         glGetShaderInfoLog(shader, logLen, &written, log);
-         std::cerr << "Shader log: " << std::endl;
-         std::cerr << log << std::endl;
-         delete [] log;
-      }
-      throw std::runtime_error(
-         std::string("Can't compile the shader defined in file ") + path);
-   }
-   return shader;
+    GLint status;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    if (! status) {
+        std::cerr << "Compilation error in shader file " << path << std::endl;
+        GLint logLen;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
+        if (logLen > 0) {
+            char *log = new char[logLen];
+            GLsizei written;
+            glGetShaderInfoLog(shader, logLen, &written, log);
+            std::cerr << "Shader log: " << std::endl;
+            std::cerr << log << std::endl;
+            delete [] log;
+        }
+        throw std::runtime_error(
+                std::string("Can't compile the shader defined in file ") + path);
+    }
+    return shader;
 }
 
 GLuint createVertexFragmentProgram(const std::string& vertex_shader_path,
-   const std::string& fragment_shader_path) {
-      GLuint vertexShader   = loadAndCompileShader(GL_VERTEX_SHADER,   vertex_shader_path);
-      GLuint fragmentShader = loadAndCompileShader(GL_FRAGMENT_SHADER, fragment_shader_path);
+        const std::string& fragment_shader_path) {
+    GLuint vertexShader   = loadAndCompileShader(GL_VERTEX_SHADER,   vertex_shader_path);
+    GLuint fragmentShader = loadAndCompileShader(GL_FRAGMENT_SHADER, fragment_shader_path);
 
-GLuint program = glCreateProgram();
-if (! program) {
-   throw std::runtime_error("Can't create GLSL program.");
-}
+    GLuint program = glCreateProgram();
+    if (! program) {
+        throw std::runtime_error("Can't create GLSL program.");
+    }
 
-glAttachShader(program, vertexShader);
-glAttachShader(program, fragmentShader);
-glLinkProgram(program);
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
 
-   GLint status;
-   glGetProgramiv(program, GL_LINK_STATUS, &status);
-   if (! status) {
-      std::cerr << "Linking error in shader program!" << std::endl;
-      GLint logLen;
-      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLen);
-      if (logLen > 0) {
-         char *log = new char[logLen];
-         GLsizei written;
-         glGetProgramInfoLog(program, logLen, &written, log);
-         std::cerr << "Shader log: " << std::endl;
-         std::cerr << log << std::endl;
-         delete [] log;
-      }
-      throw std::runtime_error("Can't link shader program.");
-   }
-   return program;
+    GLint status;
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+    if (! status) {
+        std::cerr << "Linking error in shader program!" << std::endl;
+        GLint logLen;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLen);
+        if (logLen > 0) {
+            char *log = new char[logLen];
+            GLsizei written;
+            glGetProgramInfoLog(program, logLen, &written, log);
+            std::cerr << "Shader log: " << std::endl;
+            std::cerr << log << std::endl;
+            delete [] log;
+        }
+        throw std::runtime_error("Can't link shader program.");
+    }
+    return program;
 }
 
 std::string getUnusedFileName(const std::string &prefix, const std::string &ext) {
-   std::string imageFileName("");  // initial value is returned in search fails.
+    std::string imageFileName("");  // initial value is returned in search fails.
 
-   // load the current date and time in theTime.
-   time_t theTime;
-   time(&theTime);
+    // load the current date and time in theTime.
+    time_t theTime;
+    time(&theTime);
 
-   // convert the date time into the current locale.
-   struct tm *theTimeInfo;
-   theTimeInfo = localtime(&theTime);
+    // convert the date time into the current locale.
+    struct tm *theTimeInfo;
+    theTimeInfo = localtime(&theTime);
 
-// represent the date and time in the format "150117184509" for 2015 January 17,
-// 18 hours, 45 minutes, 09 seconds.
-const int TIME_STRING_SIZE = 16;  // must be at least 13.
-char timeString[TIME_STRING_SIZE];
-strftime(timeString, TIME_STRING_SIZE, "%y%m%d%H%M%S", theTimeInfo);
+    // represent the date and time in the format "150117184509" for 2015 January 17,
+    // 18 hours, 45 minutes, 09 seconds.
+    const int TIME_STRING_SIZE = 16;  // must be at least 13.
+    char timeString[TIME_STRING_SIZE];
+    strftime(timeString, TIME_STRING_SIZE, "%y%m%d%H%M%S", theTimeInfo);
 
-std::stringstream filename;
-std::ifstream fs;
-int index =0;
+    std::stringstream filename;
+    std::ifstream fs;
+    int index =0;
 
-// find a new filename of the form <filenameprefix>_<timeString>_<index>.<ext>, where
-// <index> is incremented as needed.
-do {
-   // reset the stringstream filename
-   filename.str(std::string());      // clear the buffer content
-   filename.clear();                 // reset the state flags
+    // find a new filename of the form <filenameprefix>_<timeString>_<index>.<ext>, where
+    // <index> is incremented as needed.
+    do {
+        // reset the stringstream filename
+        filename.str(std::string());      // clear the buffer content
+        filename.clear();                 // reset the state flags
 
-   // propose an available (unused) filename.
-   filename << prefix << "_" << timeString << "_" << index++ << ext;
+        // propose an available (unused) filename.
+        filename << prefix << "_" << timeString << "_" << index++ << ext;
 
-   // Ensure the ifstream fs is closed.
-   if (fs.is_open()) fs.close();
+        // Ensure the ifstream fs is closed.
+        if (fs.is_open()) fs.close();
 
-   // If file does not exist, it can't be opened in input mode.
-   fs.open(filename.str(), std::ios_base::in);
-} while (fs.is_open() && index < MAX_FILE_MATCH_ATTEMPTS);
+        // If file does not exist, it can't be opened in input mode.
+        fs.open(filename.str(), std::ios_base::in);
+    } while (fs.is_open() && index < MAX_FILE_MATCH_ATTEMPTS);
 
-   // Test to see if a unique name was actually found.
-   if (fs.is_open() && index >= MAX_FILE_MATCH_ATTEMPTS) {
-      fs.close();  // failure: there are too many files with the same time stamp.
-   } else {       // N.B. fs must be closed on this branch, right?
-      imageFileName = filename.str();  // success!
-   }
-   return imageFileName;
+    // Test to see if a unique name was actually found.
+    if (fs.is_open() && index >= MAX_FILE_MATCH_ATTEMPTS) {
+        fs.close();  // failure: there are too many files with the same time stamp.
+    } else {       // N.B. fs must be closed on this branch, right?
+        imageFileName = filename.str();  // success!
+    }
+    return imageFileName;
 }
 
 void exportImageAsPNG(GLubyte* image, GLuint width, GLuint height, const std::string& filename_prefix) {
@@ -225,15 +225,15 @@ void exportImageAsPNG(GLubyte* image, GLuint width, GLuint height, const std::st
     unsigned int bytes_per_row = 3 * width;
 
     FIBITMAP* fi_image = FreeImage_ConvertFromRawBits(image, width, height, bytes_per_row,
-                                                   bits_per_pixel, red_mask, green_mask,
-                                                   blue_mask, top_left_pixel_appears_first);
+            bits_per_pixel, red_mask, green_mask,
+            blue_mask, top_left_pixel_appears_first);
 
-std::string imagefilename = getUnusedFileName(filename_prefix, std::string(".png"));
-if (imagefilename.length() == 0) {
-    throw std::runtime_error("Can't find an available png file name.");
-}
+    std::string imagefilename = getUnusedFileName(filename_prefix, std::string(".png"));
+    if (imagefilename.length() == 0) {
+        throw std::runtime_error("Can't find an available png file name.");
+    }
 
-FreeImage_Save(FIF_PNG, fi_image, imagefilename.c_str(), 0);  // Save fi_image as a PNG file.
+    FreeImage_Save(FIF_PNG, fi_image, imagefilename.c_str(), 0);  // Save fi_image as a PNG file.
 
     // Free allocated memory
     FreeImage_Unload(fi_image);
@@ -241,98 +241,86 @@ FreeImage_Save(FIF_PNG, fi_image, imagefilename.c_str(), 0);  // Save fi_image a
 }
 
 void exportWindowAsPNG(GLFWwindow* window, const std::string &prefix) {
-   // Recover window dimensions from glfw
-   int width;
-   int height;
-   glfwGetFramebufferSize(window, &width, &height);
+    // Recover window dimensions from glfw
+    int width;
+    int height;
+    glfwGetFramebufferSize(window, &width, &height);
 
-// allocate a buffer to store all of the pixels in the frame buffer.
-GLubyte* pixels = new GLubyte [width * height * sizeof(GLubyte)* 3];
-if (! pixels) {
-   throw std::runtime_error(std::string("Can't allocate pixel array for image of size ")
-      + std::to_string(width) + std::string(" by ") + std::to_string(height)
-      + std::string(" pixels."));
-}
+    // allocate a buffer to store all of the pixels in the frame buffer.
+    GLubyte* pixels = new GLubyte [width * height * sizeof(GLubyte)* 3];
+    if (! pixels) {
+        throw std::runtime_error(std::string("Can't allocate pixel array for image of size ")
+                + std::to_string(width) + std::string(" by ") + std::to_string(height)
+                + std::string(" pixels."));
+    }
 
-glPixelStorei(GL_PACK_ALIGNMENT, 1); // Align data by bytes so the framebuffer data will fit.
-glReadBuffer(GL_FRONT);              // The front color buffer is the visible one.
-glReadPixels(0, 0, width, height, GL_BGR, GL_UNSIGNED_BYTE, pixels);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1); // Align data by bytes so the framebuffer data will fit.
+    glReadBuffer(GL_FRONT);              // The front color buffer is the visible one.
+    glReadPixels(0, 0, width, height, GL_BGR, GL_UNSIGNED_BYTE, pixels);
 
-exportImageAsPNG(pixels, width, height, prefix);
+    exportImageAsPNG(pixels, width, height, prefix);
 
-   delete [] pixels;
-   return;
+    delete [] pixels;
+    return;
 }
 
 
 void init() {
 
-   Sphere::initialize_class();
-   Cylinder::initialize_class();
-   Cube::initialize_class();
+    Sphere::initialize_class();
+    Cylinder::initialize_class();
+    Cube::initialize_class();
 
-   /*
-    for (int i = 0; i < 3; i++) {
-        GLfloat tx = 2.0f*(i - 1);
-        for(int j = 0; j < 3; j++) {
-            GLfloat ty = 2.0*(j - 1);
-            GLfloat tz = 0.0f;
-            GLfloat rhoRed = 0.9 - i*0.1;
-            GLfloat rhoGreen = 0.9 - j*0.1;
-            GLfloat rhoBlue  = 0.9 - (i + j)*0.1;
-            Sphere *s = new Sphere(glm::vec3(tx, ty, tz), 0.5f);
-            s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-            s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-            s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-            s->set_shininess(30.0f);
-            SphereVector.push_back(*s);
-            delete s;
-        }
-    }
-    */
-
-
+    /*
+       for (int i = 0; i < 3; i++) {
+       GLfloat tx = 2.0f*(i - 1);
+       for(int j = 0; j < 3; j++) {
+       GLfloat ty = 2.0*(j - 1);
+       GLfloat tz = 0.0f;
+       GLfloat rhoRed = 0.9 - i*0.1;
+       GLfloat rhoGreen = 0.9 - j*0.1;
+       GLfloat rhoBlue  = 0.9 - (i + j)*0.1;
+       Sphere *s = new Sphere(glm::vec3(tx, ty, tz), 0.5f);
+       s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+       s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+       s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+       s->set_shininess(30.0f);
+       SphereVector.push_back(*s);
+       delete s;
+       }
+       }
+       */
 
 
-   GLfloat rhoRed;
-   GLfloat rhoGreen;
-   GLfloat rhoBlue;
 
 
-   Cube *c = new Cube();
-   rhoRed = 0;
-   rhoGreen = 0;
-   rhoBlue = 0;
-   c->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   c->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   c->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   c->set_shininess(3000.0f);
-   CubeVector.push_back(*c);
-   delete c;
-
-   Sphere *s = new Sphere();
-   rhoRed = 0;
-   rhoGreen = 0;
-   rhoBlue = 0;
-   s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   s->set_shininess(3000.0f);
-   SphereVector.push_back(*s);
-   delete s;
-
-   Cylinder *cy = new Cylinder();
-   rhoRed = .7;
-   rhoGreen = .7;
-   rhoBlue = .7;
-   cy->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   cy->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   cy->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-   cy->set_shininess(30.0f);
-   CylinderVector.push_back(*cy);
-   delete cy;
+    GLfloat rhoRed;
+    GLfloat rhoGreen;
+    GLfloat rhoBlue;
 
 
+    Cube *c = new Cube();
+    rhoRed = 1;
+    rhoGreen = 0;
+    rhoBlue = 0;
+    c->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    c->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    c->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    c->set_shininess(3000.0f);
+    CubeVector.push_back(*c);
+    delete c;
+
+
+    Cylinder *cy = new Cylinder();
+    rhoRed = 0;
+    rhoGreen = 1;
+    rhoBlue = 0;
+    cy->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_shininess(30.0f);
+    CylinderVector.push_back(*cy);
+    delete cy;
 
 
     TheAmbientIntensity = glm::vec3(0.1f, 0.1f, 0.08f);
@@ -368,153 +356,153 @@ void init() {
 // redraws the content of the Figs vector,
 
 void display(void) {
-   glClearColor(0.25,0.25,0.25,1); // gray
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glEnable(GL_DEPTH_TEST);
+    glClearColor(0.25,0.25,0.25,1); // gray
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
-   glm::vec3 eye = glm::vec3(
-         static_cast<GLfloat>(Rho*std::cos(Phi)*std::sin(Theta)),
-         static_cast<GLfloat>(Rho*std::sin(Phi)*std::sin(Theta)),
-         static_cast<GLfloat>(Rho*std::cos(Theta)));
-   glm::vec3 ctr = glm::vec3(0.0f, 0.0f, 0.0f);
-   glm::vec3 up  = glm::vec3(0.0f, 0.0f, 1.0f);
-   glm::mat4 vmtx = glm::lookAt(eye, ctr, up);
-   glm::mat4 pmtx = glm::perspective(glm::radians(50.0f), CANVAS.x/CANVAS.y, 0.1f, 15.0f);
+    glm::vec3 eye = glm::vec3(
+            static_cast<GLfloat>(Rho*std::cos(Phi)*std::sin(Theta)),
+            static_cast<GLfloat>(Rho*std::sin(Phi)*std::sin(Theta)),
+            static_cast<GLfloat>(Rho*std::cos(Theta)));
+    glm::vec3 ctr = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 up  = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::mat4 vmtx = glm::lookAt(eye, ctr, up);
+    glm::mat4 pmtx = glm::perspective(glm::radians(50.0f), CANVAS.x/CANVAS.y, 0.1f, 15.0f);
 
-   glm::vec3 eyeDirection = glm::normalize(eye);
-   glUniform3fv(SL_EyeDirection, 1, &eyeDirection[0]);
-   glUniform3fv(SL_AmbientIntensity, 1, &TheAmbientIntensity[0]);
-   glUniform3fv(SL_LightIntensity, 1, &TheLightIntensity[0]);
+    glm::vec3 eyeDirection = glm::normalize(eye);
+    glUniform3fv(SL_EyeDirection, 1, &eyeDirection[0]);
+    glUniform3fv(SL_AmbientIntensity, 1, &TheAmbientIntensity[0]);
+    glUniform3fv(SL_LightIntensity, 1, &TheLightIntensity[0]);
 
-   glm::vec3 transformedLightPosition = glm::vec3(vmtx * glm::vec4(TheLightPosition, 1.0f));
-   glUniform3fv(SL_LightPosition, 1, &transformedLightPosition[0]);
+    glm::vec3 transformedLightPosition = glm::vec3(vmtx * glm::vec4(TheLightPosition, 1.0f));
+    glUniform3fv(SL_LightPosition, 1, &transformedLightPosition[0]);
 
-   // Render Spheres
-   for (std::vector<Sphere>::iterator iter = SphereVector.begin();
-    iter != SphereVector.end(); iter++) {
-      glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
-      glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
-      glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
+    // Render Spheres
+    for (std::vector<Sphere>::iterator iter = SphereVector.begin();
+            iter != SphereVector.end(); iter++) {
+        glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
+        glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
+        glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
 
-      glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
-      glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
-      glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
-                         1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
+        glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
+                1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
 
-      iter->draw_elements();
-   }
+        iter->draw_elements();
+    }
 
 
-   // Render Cylinders
-   for (std::vector<Cylinder>::iterator iter = CylinderVector.begin();
-           iter != CylinderVector.end(); iter++) {
-      glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
-      glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
-      glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
+    // Render Cylinders
+    for (std::vector<Cylinder>::iterator iter = CylinderVector.begin();
+            iter != CylinderVector.end(); iter++) {
+        glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
+        glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
+        glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
 
-      glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
-      glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
-      glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
-                         1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
+        glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
+                1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
 
-      iter->draw_elements();
-   }
+        iter->draw_elements();
+    }
 
-   // Render Cubes
-   for (std::vector<Cube>::iterator iter = CubeVector.begin();
-           iter != CubeVector.end(); iter++) {
-      glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
-      glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
-      glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
+    // Render Cubes
+    for (std::vector<Cube>::iterator iter = CubeVector.begin();
+            iter != CubeVector.end(); iter++) {
+        glm::mat4 modelViewTransformation = vmtx * iter->model_transformation();
+        glm::mat3 vectorTransformation = glm::mat3(vmtx) * iter->vector_transformation();
+        glm::mat4 modelViewPerspectiveTransformation  =  pmtx * modelViewTransformation;
 
-      glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
-      glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
-      glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
-                         1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewTransformation, 1, GL_FALSE, &modelViewTransformation[0][0]);
+        glUniformMatrix3fv(SL_NormalVectorTransformation, 1, GL_FALSE, &vectorTransformation[0][0]);
+        glUniformMatrix4fv(SL_ModelViewPerspectiveTransformation,
+                1, GL_FALSE, &modelViewPerspectiveTransformation[0][0]);
 
-      iter->draw_elements();
-   }
-   glfwSwapBuffers(gWindow);
+        iter->draw_elements();
+    }
+    glfwSwapBuffers(gWindow);
 }
 
 void keyboard(GLFWwindow* window, int keyCode, int scanCode, int action, int modifiers) {
-   switch (keyCode) {
-      case GLFW_KEY_E: // east
-         if (action == GLFW_PRESS) {
-            if (modifiers == 0x0000) {
-               Phi += M_PI/90.0f;
-            } else {
-               Phi += M_PI/9.0f;
+    switch (keyCode) {
+        case GLFW_KEY_E: // east
+            if (action == GLFW_PRESS) {
+                if (modifiers == 0x0000) {
+                    Phi += M_PI/90.0f;
+                } else {
+                    Phi += M_PI/9.0f;
+                }
+                std::cout << "Phi = " << Phi << std::endl;
             }
-            std::cout << "Phi = " << Phi << std::endl;
-         }
-         break;
-      case GLFW_KEY_H: // home
-         if (action == GLFW_PRESS && modifiers == 0x0000) {
-            Theta = M_PI/2.0f;
-            Phi   = 0.0f;
-            Rho   = 1.0f;
-            std::cout << "Setting (Rho, Theta, Phi) = ("
-               << Rho << ", " << Theta << ", " << Phi << ")" << std::endl;
-         }
-         break;
-      case GLFW_KEY_N: // north
-         if (action == GLFW_PRESS) {
-            if (modifiers == 0x0000) {
-               Theta -= M_PI/90.0f;
-            } else {
-               Theta -= M_PI/9.0f;
+            break;
+        case GLFW_KEY_H: // home
+            if (action == GLFW_PRESS && modifiers == 0x0000) {
+                Theta = M_PI/2.0f;
+                Phi   = 0.0f;
+                Rho   = 1.0f;
+                std::cout << "Setting (Rho, Theta, Phi) = ("
+                    << Rho << ", " << Theta << ", " << Phi << ")" << std::endl;
             }
-            Theta = std::max(M_PI/180.0f, Theta);
-            std::cout << "Theta = " << Theta << std::endl;
-         }
-         break;
-      case GLFW_KEY_P: // print
-         if (action == GLFW_PRESS && modifiers == 0x0000) {
-            std::cout << "Pressed a lower-case p, scanCode = " << scanCode << std::endl;
-            exportWindowAsPNG(window, std::string("caravaggio"));
-         }
-         break;
-      case GLFW_KEY_Q: // quit
-         if (action == GLFW_PRESS && modifiers == 0x0000) {
-            std::cout << "Pressed a lower-case q, scanCode = " << scanCode << std::endl;
-            glfwSetWindowShouldClose(window, GL_TRUE);
-         }
-         break;
-      case GLFW_KEY_R:  // rho
-         if (action == GLFW_PRESS) {
-            if (modifiers == 0x0000) {
-               Rho += 0.2f;
-            } else {
-               Rho -= 0.2f;
+            break;
+        case GLFW_KEY_N: // north
+            if (action == GLFW_PRESS) {
+                if (modifiers == 0x0000) {
+                    Theta -= M_PI/90.0f;
+                } else {
+                    Theta -= M_PI/9.0f;
+                }
+                Theta = std::max(M_PI/180.0f, Theta);
+                std::cout << "Theta = " << Theta << std::endl;
             }
-            Rho = std::max(0.1, std::min(10.0, Rho));
-            std::cout << "Rho = " << Rho << std::endl;
-         }
-         break;
-      case GLFW_KEY_S:  // south
-         if (action == GLFW_PRESS) {
-            if (modifiers == 0x0000) {
-               Theta += M_PI/90.0f;
-            } else {
-               Theta += M_PI/9.0f;
+            break;
+        case GLFW_KEY_P: // print
+            if (action == GLFW_PRESS && modifiers == 0x0000) {
+                std::cout << "Pressed a lower-case p, scanCode = " << scanCode << std::endl;
+                exportWindowAsPNG(window, std::string("caravaggio"));
             }
-            Theta = std::min(M_PI*89.0f/90.0f, Theta);
-            std::cout << "Theta = " << Theta << std::endl;
-         }
-         break;
-      case GLFW_KEY_W:  // west
-         if (action == GLFW_PRESS) {
-            if (modifiers == 0x0000) {
-               Phi -= M_PI/90.0f;
-            } else {
-               Phi -= M_PI/9.0f;
+            break;
+        case GLFW_KEY_Q: // quit
+            if (action == GLFW_PRESS && modifiers == 0x0000) {
+                std::cout << "Pressed a lower-case q, scanCode = " << scanCode << std::endl;
+                glfwSetWindowShouldClose(window, GL_TRUE);
             }
-            std::cout << "Phi = " << Phi << std::endl;
-         }
-         break;
-   }
-   return;
+            break;
+        case GLFW_KEY_R:  // rho
+            if (action == GLFW_PRESS) {
+                if (modifiers == 0x0000) {
+                    Rho += 0.2f;
+                } else {
+                    Rho -= 0.2f;
+                }
+                Rho = std::max(0.1, std::min(10.0, Rho));
+                std::cout << "Rho = " << Rho << std::endl;
+            }
+            break;
+        case GLFW_KEY_S:  // south
+            if (action == GLFW_PRESS) {
+                if (modifiers == 0x0000) {
+                    Theta += M_PI/90.0f;
+                } else {
+                    Theta += M_PI/9.0f;
+                }
+                Theta = std::min(M_PI*89.0f/90.0f, Theta);
+                std::cout << "Theta = " << Theta << std::endl;
+            }
+            break;
+        case GLFW_KEY_W:  // west
+            if (action == GLFW_PRESS) {
+                if (modifiers == 0x0000) {
+                    Phi -= M_PI/90.0f;
+                } else {
+                    Phi -= M_PI/9.0f;
+                }
+                std::cout << "Phi = " << Phi << std::endl;
+            }
+            break;
+    }
+    return;
 }
 
 //------------------------------------------------------------------------------
@@ -522,80 +510,80 @@ void keyboard(GLFWwindow* window, int keyCode, int scanCode, int action, int mod
 // error_callback is used by GLFW.
 
 void GLFW_error_callback(int errorCode, const char* msg) {
-   throw std::runtime_error(msg);
+    throw std::runtime_error(msg);
 }
 
 //------------------------------------------------------------------------------
 //
 // free image error callback
 void fi_error_callback(FREE_IMAGE_FORMAT fif, const char* msg) {
-   if (fif != FIF_UNKNOWN) {
-      std:: cerr << FreeImage_GetFormatFromFIF(fif) << " format." << std:: endl;
-   }
-   throw std::runtime_error(msg);
+    if (fif != FIF_UNKNOWN) {
+        std:: cerr << FreeImage_GetFormatFromFIF(fif) << " format." << std:: endl;
+    }
+    throw std::runtime_error(msg);
 }
 
 int main(int argc, char** argv) {
 
-   // initialize GLFW
-   glfwSetErrorCallback(GLFW_error_callback);
-   if (!glfwInit())
-      throw std::runtime_error("glfwInit failed!");
+    // initialize GLFW
+    glfwSetErrorCallback(GLFW_error_callback);
+    if (!glfwInit())
+        throw std::runtime_error("glfwInit failed!");
 
-// Create the main window
-glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    // Create the main window
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-int glfw_major;
-int glfw_minor;
-int glfw_rev;
-glfwGetVersion(&glfw_major, &glfw_minor, &glfw_rev);
-std::cout << "GLFW version: " << glfw_major << "."
-   << glfw_minor << "." << glfw_rev << std::endl;
+    int glfw_major;
+    int glfw_minor;
+    int glfw_rev;
+    glfwGetVersion(&glfw_major, &glfw_minor, &glfw_rev);
+    std::cout << "GLFW version: " << glfw_major << "."
+        << glfw_minor << "." << glfw_rev << std::endl;
 
-gWindow = glfwCreateWindow((int) CANVAS.x, (int) CANVAS.y, argv[0], NULL, NULL);
-if (! gWindow)
-   throw std::runtime_error("Can't create a glfw window!");
+    gWindow = glfwCreateWindow((int) CANVAS.x, (int) CANVAS.y, argv[0], NULL, NULL);
+    if (! gWindow)
+        throw std::runtime_error("Can't create a glfw window!");
 
- glfwMakeContextCurrent(gWindow);
+    glfwMakeContextCurrent(gWindow);
 
-glfwSetKeyCallback(gWindow, keyboard);
-glewExperimental = GL_TRUE;  // Prevents a segmentation fault on Mac OSX
-if (glewInit() != GLEW_OK)
-   throw std::runtime_error("Can't initialize glewInit!");
+    glfwSetKeyCallback(gWindow, keyboard);
+    glewExperimental = GL_TRUE;  // Prevents a segmentation fault on Mac OSX
+    if (glewInit() != GLEW_OK)
+        throw std::runtime_error("Can't initialize glewInit!");
 
-std::cout << "OpenGL version: "  << glGetString(GL_VERSION) << std::endl;
-std::cout << "GLSL version: "    << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-std::cout << "Vendor: "          << glGetString(GL_VENDOR) << std::endl;
-std::cout << "Graphics engine: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "OpenGL version: "  << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GLSL version: "    << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "Vendor: "          << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "Graphics engine: " << glGetString(GL_RENDERER) << std::endl;
 
-if (! GLEW_VERSION_3_2)
-   throw std::runtime_error("OpenGL 3.2 is not supported!");
+    if (! GLEW_VERSION_3_2)
+        throw std::runtime_error("OpenGL 3.2 is not supported!");
 
-// Initializing FreeImage:
-FreeImage_Initialise(TRUE);                   // only load local plugins.
-FreeImage_SetOutputMessage(fi_error_callback);
+    // Initializing FreeImage:
+    FreeImage_Initialise(TRUE);                   // only load local plugins.
+    FreeImage_SetOutputMessage(fi_error_callback);
 
-// Let's see the version of FreeImage:
-std::cout << "FreeImage version = " << FreeImage_GetVersion() << std::endl;
+    // Let's see the version of FreeImage:
+    std::cout << "FreeImage version = " << FreeImage_GetVersion() << std::endl;
 
-init(); // Initialize the model.
+    init(); // Initialize the model.
 
-int update_count = 0;
-while(! glfwWindowShouldClose(gWindow)) {
-   update_count++;
-   display();
-   glfwWaitEvents();     // or, replace with glfwPollEvents();
-}
+    int update_count = 0;
+    while(! glfwWindowShouldClose(gWindow)) {
+        update_count++;
+        display();
+        glfwWaitEvents();     // or, replace with glfwPollEvents();
+    }
 
-   FreeImage_DeInitialise();
-   glfwTerminate();
-   std::cout << argv[0] << " gracefully exits after "
-      << update_count << " window updates." << std::endl;
-   return 0; // Can be safely omitted, but the application will still return 0.
+    FreeImage_DeInitialise();
+    glfwTerminate();
+    std::cout << argv[0] << " gracefully exits after "
+        << update_count << " window updates." << std::endl;
+    return 0; // Can be safely omitted, but the application will still return 0.
 }
 
 // end of caravaggio.cpp

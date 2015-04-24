@@ -44,79 +44,79 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 class Cube {
-private:
-    static const GLuint _primitive_restart_index{0xFFFF};
-    static const GLuint _nSlices{8};
-    static const GLuint _nWedges{8};
-    static GLenum _mode[3];
-    static GLsizei _count[3];
-    static GLsizei _nElements;
+    private:
+        static const GLuint _primitive_restart_index{0xFFFF};
+        static const GLuint _nSlices{8};
+        static const GLuint _nWedges{8};
+        static GLenum _mode[3];
+        static GLsizei _count[3];
+        static GLsizei _nElements;
 
-    static GLuint _base_offset[3];
-    static GLuint _element_buffer_object;
-    static GLuint _vertex_array_object;
-    static GLuint _vertex_buffer;
+        static GLuint _base_offset[3];
+        static GLuint _element_buffer_object;
+        static GLuint _vertex_array_object;
+        static GLuint _vertex_buffer;
 
-    // Shader Program Locations
-    static GLint _SL_AmbientRho;
-    static GLint _SL_DiffuseRho;
-    static GLint _SL_SpecularRho;
-    static GLint _SL_Shininess;
+        // Shader Program Locations
+        static GLint _SL_AmbientRho;
+        static GLint _SL_DiffuseRho;
+        static GLint _SL_SpecularRho;
+        static GLint _SL_Shininess;
 
-glm::vec3 _center;
-GLfloat   _radius;
+        glm::vec3 _center;
+        GLfloat   _radius;
 
-glm::vec3 _ambient_rho; // Perhaps a bit redundant to maintain a color for each reflection mode.
-glm::vec3 _diffuse_rho;
-glm::vec3 _specular_rho;
-GLfloat   _shininess;
+        glm::vec3 _ambient_rho; // Perhaps a bit redundant to maintain a color for each reflection mode.
+        glm::vec3 _diffuse_rho;
+        glm::vec3 _specular_rho;
+        GLfloat   _shininess;
 
-glm::mat4 _model_transformation;
-glm::mat3 _vector_transformation; // should be set to the transpose of the inverse of the
-                                  // upper left three-by-three block of _model_transformation.
+        glm::mat4 _model_transformation;
+        glm::mat3 _vector_transformation; // should be set to the transpose of the inverse of the
+        // upper left three-by-three block of _model_transformation.
 
-public:
-    static void initialize_class();
-    static void set_ambient_rho_SL(GLint sl);
-    static void set_diffuse_rho_SL(GLint sl);
-    static void set_specular_rho_SL(GLint sl);
-    static void set_shininess_SL(GLint sl);
+    public:
+        static void initialize_class();
+        static void set_ambient_rho_SL(GLint sl);
+        static void set_diffuse_rho_SL(GLint sl);
+        static void set_specular_rho_SL(GLint sl);
+        static void set_shininess_SL(GLint sl);
 
-Cube(glm::vec3 translate = glm::vec3(0.0f, 0.0f, 0.0f),
-     glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f),
-     glm::vec3 rotate = glm::vec3(0.0f,0.0f,0.0f)) :_center{translate},
-   _radius{1.0f},
-   _ambient_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
-   _diffuse_rho{glm::vec3(1.00f, 1.00f, 1.00f)},
-   _specular_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
-   _shininess{10.0f}
-   {
-      // ensure that initialize_class() has been called.
-      if (_element_buffer_object == 0) {
-         initialize_class();
-      }
+        Cube(glm::vec3 translate = glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f),
+                glm::vec3 rotate = glm::vec3(0.0f,0.0f,0.0f)) :_center{translate},
+            _radius{1.0f},
+            _ambient_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
+            _diffuse_rho{glm::vec3(1.00f, 1.00f, 1.00f)},
+            _specular_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
+            _shininess{10.0f}
+        {
+            // ensure that initialize_class() has been called.
+            if (_element_buffer_object == 0) {
+                initialize_class();
+            }
 
-      glm::mat4 identity = glm::mat4(1.0f);
-      glm::mat4 smtx = glm::scale(identity, scale);
-      glm::mat4 tmx  = glm::translate(identity, glm::vec3(-2.0f, -2.0f, 0.0f));
-      glm::mat4 rtx = glm::rotate(rotate.x, glm::vec3(1,0,0)) * glm::rotate(rotate.y, glm::vec3(0,1,0)) * glm::rotate(rotate.z, glm::vec3(0,0,1));
-      _model_transformation  = tmx * rtx * smtx;
-      _vector_transformation = glm::mat3(static_cast<GLfloat>(1.0f/_radius));
-   }
+            glm::mat4 identity = glm::mat4(1.0f);
+            glm::mat4 smtx = glm::scale(identity, scale);
+            glm::mat4 tmx  = glm::translate(identity, glm::vec3(-2.0f, -2.0f, 0.0f));
+            glm::mat4 rtx = glm::rotate(identity, rotate.x, glm::vec3(1,0,0)) * glm::rotate(identity, rotate.y, glm::vec3(0,1,0)) * glm::rotate(identity, rotate.z, glm::vec3(0,0,1));
+            _model_transformation  = tmx * rtx * smtx;
+            _vector_transformation = glm::mat3(static_cast<GLfloat>(1.0f/_radius));
+        }
 
-    void draw_elements();
-    glm::mat4 model_transformation();
-    glm::mat3 vector_transformation();
-    void set_model_transformation(glm::mat4 t);
-    void set_vector_transformation(glm::mat3 t);
+        void draw_elements();
+        glm::mat4 model_transformation();
+        glm::mat3 vector_transformation();
+        void set_model_transformation(glm::mat4 t);
+        void set_vector_transformation(glm::mat3 t);
 
-    glm::vec3 ambient_rho();
-    glm::vec3 diffuse_rho();
-    glm::vec3 specular_rho();
-    GLfloat shininess();
+        glm::vec3 ambient_rho();
+        glm::vec3 diffuse_rho();
+        glm::vec3 specular_rho();
+        GLfloat shininess();
 
-    void set_ambient_rho(glm::vec3 rho);
-    void set_diffuse_rho(glm::vec3 rho);
-    void set_specular_rho(glm::vec3 rho);
-    void set_shininess(GLfloat s);
+        void set_ambient_rho(glm::vec3 rho);
+        void set_diffuse_rho(glm::vec3 rho);
+        void set_specular_rho(glm::vec3 rho);
+        void set_shininess(GLfloat s);
 };

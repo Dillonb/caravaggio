@@ -224,7 +224,7 @@ void Cube::initialize_class() {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _element_buffer_object);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 sizeof(element), element, GL_STATIC_DRAW);
+            sizeof(element), element, GL_STATIC_DRAW);
 
     glGenVertexArrays(1, &_vertex_array_object);
     glBindVertexArray(_vertex_array_object);
@@ -251,73 +251,73 @@ void Cube::initialize_class() {
 }
 
 void Cube::draw_elements() {
-   glUniform3fv(_SL_AmbientRho, 1, &_ambient_rho[0]);
-   glUniform3fv(_SL_DiffuseRho, 1, &_diffuse_rho[0]);
-   glUniform3fv(_SL_SpecularRho, 1, &_specular_rho[0]);
-   glUniform1f(_SL_Shininess, _shininess);
+    glUniform3fv(_SL_AmbientRho, 1, &_ambient_rho[0]);
+    glUniform3fv(_SL_DiffuseRho, 1, &_diffuse_rho[0]);
+    glUniform3fv(_SL_SpecularRho, 1, &_specular_rho[0]);
+    glUniform1f(_SL_Shininess, _shininess);
 
-   glEnable(GL_PRIMITIVE_RESTART);
-   glPrimitiveRestartIndex(_primitive_restart_index);
-   glBindVertexArray(_vertex_array_object);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _element_buffer_object);
-   for (int i = 0; i < 3; i++) {
-      glDrawElements(Cube::_mode[i], Cube::_count[i], GL_UNSIGNED_SHORT,
-                     (const GLvoid *) (Cube::_base_offset[i]*sizeof(GLushort)));
-   }
+    glEnable(GL_PRIMITIVE_RESTART);
+    glPrimitiveRestartIndex(_primitive_restart_index);
+    glBindVertexArray(_vertex_array_object);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _element_buffer_object);
+    for (int i = 0; i < 3; i++) {
+        glDrawElements(Cube::_mode[i], Cube::_count[i], GL_UNSIGNED_SHORT,
+                (const GLvoid *) (Cube::_base_offset[i]*sizeof(GLushort)));
+    }
 }
 
 glm::mat4 Cube::model_transformation() {
-   return _model_transformation;
+    return _model_transformation;
 }
 
 glm::mat3 Cube::vector_transformation() {
-   return _vector_transformation;
+    return _vector_transformation;
 }
 
 glm::vec3 Cube::ambient_rho() {
-   return _ambient_rho;
+    return _ambient_rho;
 }
 
 void Cube::set_ambient_rho(glm::vec3 rho) {
-   _ambient_rho = rho;
+    _ambient_rho = rho;
 }
 
 void Cube::set_ambient_rho_SL(GLint sl) {
-   _SL_AmbientRho = sl;
+    _SL_AmbientRho = sl;
 }
 
 glm::vec3 Cube::diffuse_rho() {
-   return _diffuse_rho;
+    return _diffuse_rho;
 }
 
 void Cube::set_diffuse_rho(glm::vec3 rho) {
-   _diffuse_rho = rho;
+    _diffuse_rho = rho;
 }
 
 void Cube::set_diffuse_rho_SL(GLint sl) {
-   _SL_DiffuseRho = sl;
+    _SL_DiffuseRho = sl;
 }
 
 glm::vec3 Cube::specular_rho() {
-   return _specular_rho;
+    return _specular_rho;
 }
 
 void Cube::set_specular_rho(glm::vec3 rho) {
-   _specular_rho = rho;
+    _specular_rho = rho;
 }
 
 void Cube::set_specular_rho_SL(GLint sl) {
-   _SL_SpecularRho = sl;
+    _SL_SpecularRho = sl;
 }
 
 GLfloat Cube::shininess() {
-   return _shininess;
+    return _shininess;
 }
 
 void Cube::set_shininess(GLfloat s) {
-   _shininess = s;
+    _shininess = s;
 }
 
 void Cube::set_shininess_SL(GLint sl) {
-   _SL_Shininess = sl;
+    _SL_Shininess = sl;
 }
