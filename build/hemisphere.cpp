@@ -34,6 +34,7 @@
 //-----------
 #include "hemisphere.h"
 #include <cmath>
+#include <cstdio>
 
 GLuint Hemisphere::_base_offset[3] = {0,0,0};
 GLuint Hemisphere::_element_buffer_object = 0;
@@ -59,19 +60,43 @@ void Hemisphere::initialize_class() {
     double dPhi   = 2*M_PI/_nWedges;
 
     GLfloat position[nVertices][3];
+    GLfloat normal[nVertices][3];
 
     position[0][0] = 0.0f;   // north pole
     position[0][1] = 0.0f;
     position[0][2] = 1.0f;
+
+    normal[0][0] = 0.0f;
+    normal[0][1] = 0.0f;
+    normal[0][2] = 1.0f;
+
+    glm::vec3 norm = glm::vec3(0.0f,0.0f,0.0f);
 
     int index = 1;
     for (int slice = 0; slice < _nSlices; slice++) {
         double theta = (slice + 1)*dTheta;
         for (int wedge = 0; wedge < _nWedges; wedge++) {
             double phi = wedge*dPhi;
-            position[index][0]   = std::cos(phi) * std::sin(theta);
-            position[index][1]   = std::sin(phi) * std::sin(theta);
-            position[index++][2] = std::cos(theta);
+            position[index][0] = std::cos(phi) * std::sin(theta);
+            position[index][1] = std::sin(phi) * std::sin(theta);
+            position[index][2] = std::cos(theta);
+
+            norm.x = position[index][0];
+            norm.y = position[index][1];
+            norm.z = position[index][2];
+
+            norm.z *= std::sin(phi * 16.0f) + 1.0f;
+            printf("%f %f ", position[index][2], norm.z);
+
+            norm = glm::normalize(norm);
+
+            printf("%f \n", norm.z);
+
+            normal[index][0] = norm.x;
+            normal[index][1] = norm.y;
+            normal[index][2] = norm.z;
+
+            index++;
         }
     }
     // index shoud now equal nHemisphereVertices - 1

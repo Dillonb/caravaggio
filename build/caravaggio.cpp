@@ -272,7 +272,9 @@ void init() {
     Sphere::initialize_class();
     Cylinder::initialize_class();
     Cube::initialize_class();
+    Hemisphere::initialize_class();
 
+    // Cheese
     GLfloat rhoRed;
     GLfloat rhoGreen;
     GLfloat rhoBlue;
@@ -291,7 +293,7 @@ void init() {
     CubeVector.push_back(*c);
     delete c;
 
-
+    // Burger patty
     Cylinder *cy = new Cylinder(
             glm::vec3(0.0f,0.0f,0.0f),
             glm::vec3(0.0f,0.0f,0.0f),
@@ -307,24 +309,9 @@ void init() {
     CylinderVector.push_back(*cy);
     delete cy;
 
-    //Sphere *s = new Sphere(
-            //glm::vec3(0.0f,0.0f,0.0f),
-            //glm::vec3(0.0f,0.0f,0.0f),
-            //glm::vec3(1.0f,1.0f,1.0f)
-            //);
-    //rhoRed = 250.0f/255.0f;
-    //rhoGreen = 193.0f/255.0f;
-    //rhoBlue = 88.0f/255.0f;
-    //s->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    //s->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    //s->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    //s->set_shininess(30.0f);
-    //SphereVector.push_back(*s);
-    //delete s;
-
-
+    // Top bun
     Hemisphere *hs = new Hemisphere(
-            glm::vec3(0.0f,0.0f,0.3f),
+            glm::vec3(0.0f,0.0f,0.2f),
             glm::vec3(0.0f,0.0f,0.0f),
             glm::vec3(0.9f,0.9f,0.7f)
             );
@@ -338,24 +325,25 @@ void init() {
     HemisphereVector.push_back(*hs);
     delete hs;
 
-    hs = new Hemisphere(
+    // Bottom bun
+    cy = new Cylinder(
+            glm::vec3(0.0f,0.0f,-0.25f),
             glm::vec3(0.0f,0.0f,0.0f),
-            glm::vec3(M_PI,0.0f,0.0f),
-            glm::vec3(0.9f,0.9f,0.4f)
+            glm::vec3(0.9f,0.9f,0.3f)
             );
     rhoRed = 250.0f/255.0f;
     rhoGreen = 193.0f/255.0f;
     rhoBlue = 88.0f/255.0f;
-    hs->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    hs->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    hs->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    hs->set_shininess(30.0f);
-    HemisphereVector.push_back(*hs);
-    delete hs;
+    cy->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
+    cy->set_shininess(30.0f);
+    CylinderVector.push_back(*cy);
+    delete cy;
 
     TheAmbientIntensity = glm::vec3(0.1f, 0.1f, 0.08f);
     TheLightIntensity   = glm::vec3(1.0f, 1.0f, 0.8f);  // a yellow tint.
-    TheLightPosition    = glm::vec3(10.0f, 0.0f, 10.0f);
+    TheLightPosition    = glm::vec3(3.0f, 0.0f, 10.0f);
 
     GLuint shader_program = createVertexFragmentProgram(std::string("phong.vert"),
             std::string("phong.frag"));

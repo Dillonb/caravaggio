@@ -89,7 +89,7 @@ class Hemisphere {
             _ambient_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
             _diffuse_rho{glm::vec3(1.00f, 1.00f, 1.00f)},
             _specular_rho{glm::vec3(0.10f, 0.10f, 0.10f)},
-            _shininess{10.0f}
+            _shininess{30.0f}
         {
             // ensure that initialize_class() has been called.
             if (_element_buffer_object == 0) {
@@ -103,7 +103,13 @@ class Hemisphere {
             glm::mat4 smtx = glm::scale(identity, scale);
 
             _model_transformation  = tmx * rtx * smtx;
-            _vector_transformation = glm::mat3(static_cast<GLfloat>(1.0f/_radius));
+            _vector_transformation = glm::mat3();
+            for (int x = 0; x < 3; x++) {
+                for (int y = 0; y < 3; y++) {
+                    _vector_transformation[x][y] = _model_transformation[x][y];
+                }
+            }
+            _vector_transformation = glm::transpose(glm::inverse(_vector_transformation));
         }
 
         void draw_elements();

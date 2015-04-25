@@ -104,7 +104,13 @@ class Cube {
             glm::mat4 smtx = glm::scale(identity, scale);
 
             _model_transformation  = tmx * rtx * smtx;
-            _vector_transformation = glm::mat3(static_cast<GLfloat>(1.0f/_radius));
+            _vector_transformation = glm::mat3();
+            for (int x = 0; x < 3; x++) {
+                for (int y = 0; y < 3; y++) {
+                    _vector_transformation[x][y] = _model_transformation[x][y];
+                }
+            }
+            _vector_transformation = glm::transpose(glm::inverse(_vector_transformation));
         }
 
         void draw_elements();
