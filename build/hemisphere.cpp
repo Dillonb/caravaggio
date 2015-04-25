@@ -85,12 +85,19 @@ void Hemisphere::initialize_class() {
             norm.y = position[index][1];
             norm.z = position[index][2];
 
-            norm.z *= std::sin(phi * 16.0f) + 1.0f;
-            printf("%f %f ", position[index][2], norm.z);
+            //norm.x *= std::sin(phi * 3.0f);
+            //norm.y *= std::sin(phi * 3.0f);
+            //norm.z *= std::sin(phi * 5.0f);
+            norm.z *= 2.1 *  sin(phi * 2) * cos(phi * 2) + abs(cos(theta)); //6.0f * cos(sin(cos(8.0f * (32.0f * theta + phi/3.1415f))));
+            //norm.z *= std::sin(theta + phi)/(2+std::cos(theta/phi));
+            //norm.x += 1.0f;
+            //norm.y += 1.0f;
+            norm.z += 1.2f;
+            //printf("%f %f ", position[index][2], norm.z)(
 
             norm = glm::normalize(norm);
 
-            printf("%f \n", norm.z);
+            //printf("%f \n", norm.z);
 
             normal[index][0] = norm.x;
             normal[index][1] = norm.y;
@@ -160,9 +167,9 @@ void Hemisphere::initialize_class() {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(position), position);
 
     // For the normal vector to each vertex
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(position), sizeof(position), position);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(normal), sizeof(normal), normal);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid *) sizeof(position));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (const GLvoid *) sizeof(normal));
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);

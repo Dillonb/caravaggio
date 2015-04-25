@@ -313,7 +313,7 @@ void init() {
     Hemisphere *hs = new Hemisphere(
             glm::vec3(0.0f,0.0f,0.2f),
             glm::vec3(0.0f,0.0f,0.0f),
-            glm::vec3(0.9f,0.9f,0.7f)
+            glm::vec3(0.9f,0.9f,0.60f)
             );
     rhoRed = 250.0f/255.0f;
     rhoGreen = 193.0f/255.0f;
@@ -321,7 +321,7 @@ void init() {
     hs->set_ambient_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     hs->set_diffuse_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
     hs->set_specular_rho(glm::vec3(rhoRed, rhoGreen, rhoBlue));
-    hs->set_shininess(30.0f);
+    hs->set_shininess(80.0f);
     HemisphereVector.push_back(*hs);
     delete hs;
 
