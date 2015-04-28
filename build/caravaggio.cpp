@@ -343,7 +343,7 @@ void init() {
 
     TheAmbientIntensity = glm::vec3(0.1f, 0.1f, 0.08f);
     TheLightIntensity   = glm::vec3(1.0f, 1.0f, 0.8f);  // a yellow tint.
-    TheLightPosition    = glm::vec3(3.0f, 0.0f, 10.0f);
+    TheLightPosition    = glm::vec3(10.0f, 0.0f, 10.0f);
 
     GLuint shader_program = createVertexFragmentProgram(std::string("phong.vert"),
             std::string("phong.frag"));
